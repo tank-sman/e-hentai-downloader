@@ -199,7 +199,7 @@ def checkIMGlimit():
     # open("site-datas/tempdata.html","w",encoding="utf-8").write(home)
     limit = bs.find("strong").contents[0]
     as_str = limit+f"/5000"
-    while int(limit)>=4900:
+    while int(limit)>=4950:
         bs = BeautifulSoup(home,"html.parser")
         limit = bs.find("strong").contents[0]
         as_str = limit+f"/5000"
