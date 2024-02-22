@@ -2,7 +2,6 @@ from os import get_terminal_size
 from colorama import Back, Fore, Style
 from downloader import Download
 from settings import readSetting, resource_path, editsettings
-
 import json, os, subprocess, sys, time
 
 """
@@ -17,7 +16,6 @@ import json, os, subprocess, sys, time
 printline = True
 exit = False
 while exit == False:
-    # Cmd = input("Menu\n ├─ Create File(c) \n ├─ Do Multiply Folder (m)  \n ├─ Exit (e) \n └─ Setting (s) No t working \n~: ")
     if printline:
         print(
             "\n" * (os.get_terminal_size().lines - 7)
