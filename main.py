@@ -19,7 +19,7 @@ while exit == False:
     if printline:
         print(
             "\n" * (os.get_terminal_size().lines - 7)
-            + "Menu\n ├─ 1-Download \n ├─ 2-Load Settings \n ├─ 3-About \n └─ 4-Exit \n"
+            + "Menu\n ├─ 1-Download \n ├─ 2-Cookies \n ├─ 3-About \n └─ 4-Exit \n"
         )
     printline = True
     Cmd = input("~:")
@@ -30,18 +30,18 @@ while exit == False:
     elif Cmd == "2":
         exitsetting = False
         while exitsetting == False:
-            print("\nSettings ")
+            print("\n" * (os.get_terminal_size().lines - 9) + "\nSettings ")
             settings = readSetting()
             for i in settings:
                 print(
                     " ├─ "
                     + str(list(settings).index(i) + 1)
-                    + "-"
+                    + "- "
                     + i
-                    + ": "
+                    + " : "
                     + settings[i]
                 )
-            print(" └─ " + str(list(settings).__len__() + 1) + "-Back\n")
+            print(" └─ " + str(list(settings).__len__() + 1) + "- Back\n")
             inp = input("Settings:")
             if int(inp) <= len(settings):
                 print(f"editing {list(settings.keys())[int(inp)-1]}")
