@@ -1,6 +1,6 @@
 from functions import *
 from random import randint
-
+from colorama import Back, Fore, Style
 
 def Download():
     link = input("gallery link: ")
@@ -13,10 +13,10 @@ def Download():
     # exit()
     if data.find("Due to its content, it should not be viewed by anyone") == "-1":
         print(
-            """
-Offensive For Everyone!
+            f"""
+{Back.WHITE}{Fore.BLACK}Offensive For Everyone!{Back.BLACK}{Fore.WHITE}
     Due to its content, it should not be viewed by anyone
-but still downloading :)"""
+but still downloading ;)"""
         )
         sleep(3)
         data = download(link + "?nw=always")
@@ -50,11 +50,10 @@ but still downloading :)"""
     if len(pages) == 1:
         pass
     else:
-        pages.pop()  # if loop didn't work so I remove it manualiy so this line do -> removes next page button
+        pages.pop()  # if loop didn't work so I remove it manualiy. so this line do -> removes next page button
+        pages = complete_list(link, pages)
 
     # print(pages)
-
-    pages = complete_list(link, pages)
     pages_links = []
 
     print("Downloading pages contents")
@@ -94,7 +93,7 @@ but still downloading :)"""
         create_download_info(link, data, FinalPageLinks)
     else:
         FinalPageLinks = pages_links.copy()
-        create_download_info(link, data, pages_links)
+        create_download_info(link, data, FinalPageLinks)
 
     for i in FinalPageLinks:
         if get_downloadeds(i.split("/")[-1], GN):
@@ -126,4 +125,4 @@ if __name__ == "__main__":
 
 # // todo: add https://e-hentai.org/home.php to check for image limit ---- DONE
 # todo: handling: Downloading original files of this gallery during peak hours requires GP, and you do not have enough
-# todo: fix: Error on downloading one page gallerys
+#// todo: fix: Error on downloading one page gallerys

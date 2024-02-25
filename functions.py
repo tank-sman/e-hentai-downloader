@@ -2,6 +2,7 @@ from bs4 import BeautifulSoup
 from time import sleep, ctime
 from os import get_terminal_size
 from settings import readSetting
+from colorama import Back, Fore, Style
 import requests, json, os, re
 
 invalid_chars = ["\\", "/", ":", "*", "?", '"', "<", ">", "|"]
@@ -169,12 +170,10 @@ def create_download_info(url, pageData, imageslink):
     for i in tagnames:
         tags += i + tagnames[i]
         tags += "\n"
-    imagelist = ""
 
+    imagelist = ""
     for i in imageslink:
         imagelist += i + "\n"
-
-    # print(tagnames)
 
     fulltext = f"""    {url}
 
@@ -184,7 +183,7 @@ Category: {clas}
 Date: {Posted.contents[0]}
 Language: {Language.contents[0]}
 File Size: {File_Size.contents[0]}
-Pages:{pagesNumber.contents[0]}
+Pages: {pagesNumber.contents[0]}
 Favorited: {Favorited.contents[0]}
 
 Rating:{bs.find("td",{"id":"rating_label"}).contents[0]}
@@ -198,17 +197,20 @@ images links:
 {imagelist}
 
 download started on {ctime()}
-Created by tank§man e-Hentai-Downloader
+Created by github.com/tank-sman/e-hentai-downloader.
 """
     try:
         file = open(GN + "/info.txt", "x", encoding="utf-8")
         file.write(fulltext)
         file.close()
     except:
-        print("info file exist\n reWriting")
-        file = open(GN + "/info.txt", "w", encoding="utf-8")
-        file.write(fulltext)
-        file.close()
+        print("info file exist.")
+        rewrite = readSetting()["rewriteInfo"]
+        if rewrite:
+            print("Rewriting...")
+            file = open(GN + "/info.txt", "w", encoding="utf-8")
+            file.write(fulltext)
+            file.close()
 
 
 def checkIMGlimit():
@@ -221,7 +223,7 @@ def checkIMGlimit():
         bs = BeautifulSoup(home, "html.parser")
         limit = bs.find("strong").contents[0]
         as_str = limit + f"/5000"
-        limittext = as_str + " image limit you can't download more images "
+        limittext = as_str + f" image limit. you {Fore.RED}can't{Fore.WHITE} download more images "
         print()
         print(
             limittext
