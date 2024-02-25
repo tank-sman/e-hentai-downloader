@@ -1,7 +1,7 @@
 from bs4 import BeautifulSoup
 from time import sleep, ctime
 from os import get_terminal_size
-from settings import readSetting
+from settings import *
 from colorama import Back, Fore, Style
 import requests, json, os, re
 
@@ -24,23 +24,23 @@ def replaceName(text):
 def get_header():
     datas = readSetting()
     userdata = [
-        "ipb_memeber_id=" + datas["ipb_member_id"],
-        "ipb_pass_hash=" + datas["ipb_pass_hash"],
-        "ipb_session_id=" + datas["ipb_session_id"],
-        "sk=" + datas["sk"],
+        datas["ipb_session_id"],
+        datas["ipb_member_id"],
+        datas["ipb_pass_hash"],
+        datas["sk"],
     ]
-    cookies = ""
-    for i in userdata:
-        cookies += i + "; "
 
     head = {
-        "Cookie": cookies,
+        "Cookie": f"ipb_session_id={userdata[0]}; ipb_member_id={userdata[1]}; ipb_pass_hash={userdata[2]}; sk={userdata[3]}",
         "Accept-Language": "en-US,en;q=0.5",
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:122.0) Gecko/20100101 Firefox/122.0",
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:122.0) Gecko/20100101 Firefox/123.0",
         "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
         "Accept-Encoding": "gzip, deflate, br",
+        "Connection":"keep-alive",
+        "Host":"e-hentai.org"
     }
 
+    # print(head)
     return head
 
 
@@ -88,8 +88,8 @@ def download_image(url: str):
 
         GN = replaceName(GN)
 
-        filename = GN + "/" + url.split("/")[-1] + ".png"
-
+        filename = _file_name_for_download(url,bs, GN)
+    
     except:
         exit(data.text)
 
@@ -113,12 +113,18 @@ def download_image(url: str):
             sleep(0.2)
             pass
 
+def _file_name_for_download(url,bs, GN):
+    imagedata = bs.find("div", {"id": "i2"}).find_all("div")[-1].contents[0]
+    filename = GN + "/" +url.split("/")[-1]+"-"+ imagedata.split(" :: ")[0]
+    return filename
 
-def get_downloadeds(name: str, GN: str):
-    if os.path.isfile(GN + "/" + name + ".png"):
-        return False
-    else:
-        return True
+
+def get_downloadeds(name: str,GN:str):
+    for file in os.listdir(GN):
+        if str(file).startswith(f"{name}-"):
+            return False
+        else:pass
+    return True
 
 
 def complete_list(link, pages):
@@ -216,12 +222,15 @@ Created by github.com/tank-sman/e-hentai-downloader.
 def checkIMGlimit():
     home = download("https://e-hentai.org/home.php")
     bs = BeautifulSoup(home, "html.parser")
-    # open("site-datas/tempdata.html","w",encoding="utf-8").write(home)
-    limit = bs.find("strong").contents[0]
+    # open(resource_path()+"/site-datas/tempdata.html","w",encoding="utf-8").write(home)
+    try:limit = bs.find("strong").contents[0]
+    except:
+        return "None"
     as_str = limit + f"/5000"
     while int(limit) >= 4950:
         bs = BeautifulSoup(home, "html.parser")
-        limit = bs.find("strong").contents[0]
+        try:limit = bs.find("strong").contents[0]
+        except:return "None"
         as_str = limit + f"/5000"
         limittext = as_str + f" image limit. you {Fore.RED}can't{Fore.WHITE} download more images "
         print()
@@ -234,9 +243,12 @@ def checkIMGlimit():
         sleep(20)
         home = download("https://e-hentai.org/home.php")
         bs = BeautifulSoup(home, "html.parser")
-        limit = bs.find("strong").contents[0]
+        try:limit = bs.find("strong").contents[0]
+        except:return "None"
+        
 
     return str(as_str)
+    # return "None"
 
 
 def parse_ranges(ranges: str, pages_links: list = []):
@@ -330,5 +342,4 @@ def parse_ranges(ranges: str, pages_links: list = []):
 
 
 if __name__ == "__main__":
-    # print(checkIMGlimit())
     pass

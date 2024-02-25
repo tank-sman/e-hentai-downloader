@@ -96,7 +96,7 @@ but still downloading ;)"""
         create_download_info(link, data, FinalPageLinks)
 
     for i in FinalPageLinks:
-        if get_downloadeds(i.split("/")[-1], GN):
+        if get_downloadeds(i.split("/")[-1],GN):
             imglimit = checkIMGlimit()
             sleep(1)
             terminalx = get_terminal_size().columns
@@ -112,7 +112,7 @@ but still downloading ;)"""
             terminalx = get_terminal_size().columns
             print(
                 i.split("/")[-1]
-                + ".png already exesits"
+                + " already downloaded"
                 + " " * (terminalx - len(i.split("/")[-1]) - 21),
                 end="\r",
             )

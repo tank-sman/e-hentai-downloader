@@ -48,7 +48,7 @@ while exit == False:
                     + "- "
                     + i
                     + " : "
-                    + settings[i]
+                    + str(settings[i])
                 )
             print(" └─ " + str(list(settings).__len__() + 1) + "- Back\n")
             inp = input("Settings:")
