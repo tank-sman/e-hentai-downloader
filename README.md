@@ -12,7 +12,7 @@ And it is not necessary that the browser is open at the same time. If the browse
 
 ### installing using git
 
-``` terminal
+``` ps1
 git clone https://github.com/tank-sman/e-hentai-downloader
 
 cd e-hentai-downloader
@@ -26,7 +26,7 @@ python main.py
 
 Unpack zip file and open terminal in extracted folder.
 
-``` terminal
+``` ps1
 pip install -r requirements.txt
 
 python main.py
@@ -54,7 +54,7 @@ Copy and paste the values as the program prompts
 
 - [ ] Handling downloads on peak hours
 
-- [ ] Fix single page galleries downloading issue
+- [x] Fix single page galleries downloading issue
 
 ***That's it for now----***
 
