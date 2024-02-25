@@ -1,6 +1,8 @@
 from os import get_terminal_size
+from turtle import down
 from colorama import Back, Fore, Style
 from downloader import Download
+from functions import download_image
 from settings import readSetting, resource_path, editsettings
 import json, os, subprocess, sys, time
 
@@ -18,8 +20,8 @@ exit = False
 while exit == False:
     if printline:
         print(
-            "\n" * (os.get_terminal_size().lines - 7)
-            + "Menu\n ├─ 1-Download \n ├─ 2-Cookies \n ├─ 3-About \n └─ 4-Exit \n"
+            "\n" * (os.get_terminal_size().lines - 8)
+            + "Menu\n ├─ 1-Download Gallery \n ├─ 2-Download single image \n ├─ 3-Cookies \n ├─ 4-About \n └─ 5-Exit \n"
         )
     printline = True
     Cmd = input("~:")
@@ -27,7 +29,14 @@ while exit == False:
     if Cmd == "1":
         Download()
 
-    elif Cmd == "2":
+    if Cmd == "2":
+        imageurl = input("E-Hentai Page URL: ")
+        try:
+            download_image(imageurl)
+        except FileExistsError:
+            print("already exesits")
+
+    elif Cmd == "3":
         exitsetting = False
         while exitsetting == False:
             print("\n" * (os.get_terminal_size().lines - 9) + "\nSettings ")
@@ -49,7 +58,7 @@ while exit == False:
                 editsettings(list(settings.keys())[int(inp) - 1], newval)
             else:
                 exitsetting = True
-    elif Cmd.lower() == "3":
+    elif Cmd.lower() == "4":
         print(
             "\n" * (os.get_terminal_size().lines - 3)
             + """
@@ -57,7 +66,7 @@ maded with ♥
     2024    tank§man"""
         )
         input()
-    elif Cmd.lower() == "4":
+    elif Cmd.lower() == "5":
         exit = True
     else:
         print(Back.WHITE + Fore.BLACK + "-invalid-" + Style.RESET_ALL + "\n")

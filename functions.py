@@ -60,7 +60,7 @@ def download(link: str):
     return req.text
 
 
-def send_download_request(link, filename):
+def image_download_request(link, filename):
     response = requests.get(link, stream=True, headers=get_header())
     response.raise_for_status()  # Raise error if download fails
     with open(filename, "wb") as f:
@@ -104,7 +104,7 @@ def download_image(url: str):
     downloaded = False
     while not downloaded:
         try:
-            send_download_request(link, filename)
+            image_download_request(link, filename)
             downloaded = True
         except KeyboardInterrupt:
             break

@@ -46,7 +46,7 @@ Copy and paste the values as the program prompts
 
 ## ***in the future:***
 
-- [ ] Download single images
+- [x] Download single images
 
 - [ ] Download multiple files with parallel execution
 
