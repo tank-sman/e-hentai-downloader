@@ -40,7 +40,7 @@ while exit == False:
         exitsetting = False
         while exitsetting == False:
             print("\n" * (os.get_terminal_size().lines - 9) + "\nSettings ")
-            settings = readSetting()
+            settings = json.loads(os.environ["userdata"])
             for i in settings:
                 print(
                     " ├─ "

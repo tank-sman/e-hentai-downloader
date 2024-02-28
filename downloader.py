@@ -6,6 +6,8 @@ def Download():
     link = input("gallery link: ")
 
     link = link[0 : link.find("?")]
+    
+    get_header()
 
     data = download(link)
     retry = 0
@@ -41,8 +43,8 @@ but still downloading ;)"""
 
     mainGN = str(bs.find("h1", {"id": "gn"}).contents[0])
     GN = replaceName(mainGN)
-    print("\n\n\n\n" + mainGN)
-    print("LETS GO!\n\n\n\n")
+    print("\n\n\n\n"+"="*32+"\n"+ mainGN)
+    print("LETS GO!"+"\n"+"="*32+"\n\n\n\n")
 
     for i in pagelist[0].find_all("a"):
         if i not in pages:
@@ -59,7 +61,7 @@ but still downloading ;)"""
     print("Downloading pages contents")
     pagenumberCount = 1
     for i in pages:
-        print("Page", pagenumberCount)
+        print("Page", pagenumberCount,end="\r")
         pagenumberCount += 1
         sleep(0.5)
         # print(i)
@@ -80,7 +82,7 @@ but still downloading ;)"""
             pages_links.append(pic.find("a")["href"])
 
     print(
-        "===============================\n"
+        "\n===============================\n"
         + str(len(pages_links))
         + " pages\n==============================="
     )

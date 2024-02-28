@@ -1,6 +1,7 @@
 from bs4 import BeautifulSoup
 from time import sleep, ctime
-from os import get_terminal_size
+from os import environ, get_terminal_size
+from json import dumps,loads
 from settings import *
 from colorama import Back, Fore, Style
 import requests, json, os, re
@@ -19,17 +20,16 @@ def replaceName(text):
             export += i
     return export
 
-
-# datas = dict(json.load(open("./data.json")))
 def get_header():
-    datas = readSetting()
+    readSetting()
+    datas = loads(environ["userdata"])
     userdata = [
         datas["ipb_session_id"],
         datas["ipb_member_id"],
         datas["ipb_pass_hash"],
         datas["sk"],
     ]
-
+    environ["proxy"] = dumps({"https_proxy":datas["proxy"]})
     head = {
         "Cookie": f"ipb_session_id={userdata[0]}; ipb_member_id={userdata[1]}; ipb_pass_hash={userdata[2]}; sk={userdata[3]}",
         "Accept-Language": "en-US,en;q=0.5",
@@ -39,29 +39,33 @@ def get_header():
         "Connection":"keep-alive",
         "Host":"e-hentai.org"
     }
+    environ["req_head"] = dumps(head)
 
-    # print(head)
-    return head
-
+def request(url):
+    return requests.get(url, headers=loads(environ["req_head"]),proxies=loads(environ["proxy"]))
 
 def download(link: str):
-    # req = requests.get(link,cookies=cockies)
     downloaded = False
     while not downloaded:
         try:
-            req = requests.get(link, headers=get_header())
+            req = request(link)
             downloaded = True
         except KeyboardInterrupt:
             print("\nKeyboardInterrupt\n")
             exit()
         except Exception as err:
             print("Connection Error: ", err)
-            sleep(0.2)
+            sleep(1)
+    # print(req.headers)
     return req.text
 
+if __name__ == "__main__":
+    get_header()
+    download("https://google.com")
+    # print(loads(environ["userdata"]))
 
 def image_download_request(link, filename):
-    response = requests.get(link, stream=True, headers=get_header())
+    response = request(link)
     response.raise_for_status()  # Raise error if download fails
     with open(filename, "wb") as f:
         for chunk in response.iter_content(1024):
@@ -73,7 +77,7 @@ def download_image(url: str):
     downloaded = False
     while not downloaded:
         try:
-            data = requests.get(url, headers=get_header())
+            data = request(url)
             downloaded = True
         except KeyboardInterrupt:
             print("\nKeyboardInterrupt\n")
@@ -109,9 +113,10 @@ def download_image(url: str):
         except KeyboardInterrupt:
             break
         except:
-            print("\n connection error")
+            print("connection error"+" "*(os.get_terminal_size().columns-24)+ctime()[11:-5],end="\r")
             sleep(0.2)
             pass
+
 
 def _file_name_for_download(url,bs, GN):
     imagedata = bs.find("div", {"id": "i2"}).find_all("div")[-1].contents[0]
@@ -244,7 +249,7 @@ def checkIMGlimit():
         home = download("https://e-hentai.org/home.php")
         bs = BeautifulSoup(home, "html.parser")
         try:limit = bs.find("strong").contents[0]
-        except:return "None"
+        except:return "Error on login"
         
 
     return str(as_str)

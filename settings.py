@@ -14,6 +14,7 @@ datas = {
     "ipb_pass_hash": "",
     "ipb_session_id": "",
     "sk": "",
+    "proxy":""
 }
 
 
@@ -33,8 +34,8 @@ def readSetting(datas=datas) -> dict:
                 datas["ipb_session_id"] = sessionID
                 datas["sk"] = sk
         json.dump(datas, open(settingsfilename, "x"), indent=4)
-    return datas
-
+    os.environ["userdata"]=json.dumps(datas)
+    # return datas
 
 datas = readSetting()
 
