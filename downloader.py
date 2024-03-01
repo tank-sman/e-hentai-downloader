@@ -1,3 +1,4 @@
+from multiprocessing import Pool
 from functions import *
 from colorama import Back, Fore, Style
 
@@ -39,9 +40,10 @@ but still downloading ;)"""
     tags = bs.find("div", {"class": "gm"})
     pagelist = bs.find_all("div", {"class": "gtb"})
     pages = []
-
+    print(data)
     mainGN = str(bs.find("h1", {"id": "gn"}).contents[0])
     GN = replaceName(mainGN)
+    os.environ["DownloadGalleryName"] =GN
     print("\n\n\n\n"+"="*32+"\n"+ mainGN)
     print("LETS GO!"+"\n"+"="*32+"\n\n\n\n")
 
@@ -96,29 +98,34 @@ but still downloading ;)"""
         FinalPageLinks = pages_links.copy()
         create_download_info(link, data, FinalPageLinks)
 
-    for i in FinalPageLinks:
-        if get_downloadeds(i.split("/")[-1],GN):
-            imglimit = checkIMGlimit()
-            sleep(1)
-            terminalx = get_terminal_size().columns
-            strprint = (
-                i
-                + " " * (terminalx - len(i) - len(imglimit) - 11)
+    # for i in FinalPageLinks:
+        with Pool(4) as p:
+            p.map(MPdownload,FinalPageLinks)
+    print()
+
+def MPdownload(link):
+    GN = os.environ["DownloadGalleryName"]
+    if get_downloadeds(link.split("/")[-1],GN):
+        imglimit = checkIMGlimit()
+        sleep(1)
+        terminalx = get_terminal_size().columns
+        strprint = (
+                link
+                + " " * (terminalx - len(link) - len(imglimit) - 11)
                 + f"|{imglimit}| "
                 + ctime()[11:-5]
             )
-            print(strprint, end="\r")
-            download_image(i)
-        else:
-            terminalx = get_terminal_size().columns
-            print(
-                i.split("/")[-1]
+        print(strprint, end="\r")
+        download_image(link)
+    else:
+        terminalx = get_terminal_size().columns
+        print(
+                link.split("/")[-1]
                 + " already downloaded"
-                + " " * (terminalx - len(i.split("/")[-1]) - 21),
+                + " " * (terminalx - len(link.split("/")[-1]) - 21),
                 end="\r",
             )
-            sleep(0.02)
-    print()
+        sleep(0.02)
 
 
 if __name__ == "__main__":
