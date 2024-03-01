@@ -1,5 +1,4 @@
 from functions import *
-from random import randint
 from colorama import Back, Fore, Style
 
 def Download():
