@@ -40,7 +40,7 @@ but still downloading ;)"""
     tags = bs.find("div", {"class": "gm"})
     pagelist = bs.find_all("div", {"class": "gtb"})
     pages = []
-    print(data)
+    # print(data)
     mainGN = str(bs.find("h1", {"id": "gn"}).contents[0])
     GN = replaceName(mainGN)
     os.environ["DownloadGalleryName"] =GN
@@ -79,7 +79,6 @@ but still downloading ;)"""
             imagebox = bs.find_all("div", {"class": "gdtm"})
 
         for pic in imagebox:
-            # print(pic.find("a")["href"])
             pages_links.append(pic.find("a")["href"])
 
     print(
@@ -98,9 +97,8 @@ but still downloading ;)"""
         FinalPageLinks = pages_links.copy()
         create_download_info(link, data, FinalPageLinks)
 
-    # for i in FinalPageLinks:
-        with Pool(4) as p:
-            p.map(MPdownload,FinalPageLinks)
+    with Pool(int(json.loads(os.environ["userdata"])["core"])) as p:
+        p.map(MPdownload,FinalPageLinks)
     print()
 
 def MPdownload(link):
@@ -115,7 +113,7 @@ def MPdownload(link):
                 + f"|{imglimit}| "
                 + ctime()[11:-5]
             )
-        print(strprint, end="\r")
+        print(strprint, end="")
         download_image(link)
     else:
         terminalx = get_terminal_size().columns
@@ -123,7 +121,7 @@ def MPdownload(link):
                 link.split("/")[-1]
                 + " already downloaded"
                 + " " * (terminalx - len(link.split("/")[-1]) - 21),
-                end="\r",
+                end="",
             )
         sleep(0.02)
 

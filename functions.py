@@ -216,7 +216,7 @@ Created by github.com/tank-sman/e-hentai-downloader.
         file.close()
     except:
         print("info file exist.")
-        rewrite = readSetting()["rewriteInfo"]
+        rewrite = json.loads(environ["userdata"])["rewriteInfo"]
         if rewrite:
             print("Rewriting...")
             file = open(GN + "/info.txt", "w", encoding="utf-8")
@@ -302,7 +302,7 @@ def parse_ranges(ranges: str, pages_links: list = []):
 
             elif "-" in range_str and "/" not in range_str:
                 start, end = map(int, range_str.split("-"))
-                for i in range(start - 1, end):
+                for i in range(start - 1 if start!=0 else 0, end):
                     export.append(i)
 
             elif "/" in range_str:
@@ -330,7 +330,7 @@ def parse_ranges(ranges: str, pages_links: list = []):
             elif "-" in range_str and "/" not in range_str:
                 listsplit = range_str[1::]
                 start, end = map(int, listsplit.split("-"))
-                for i in range(start - 1, end):
+                for i in range(start - 1 if start!=0 else 0, end):
                     export.remove(i)
 
             elif "/" in range_str:

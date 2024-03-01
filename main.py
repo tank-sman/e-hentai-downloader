@@ -21,7 +21,7 @@ while exit == False:
     if printline:
         print(
             "\n" * (os.get_terminal_size().lines - 8)
-            + "Menu\n ├─ 1-Download Gallery \n ├─ 2-Download single image \n ├─ 3-Cookies \n ├─ 4-About \n └─ 5-Exit \n"
+            + "Menu\n ├─ 1-Download Gallery \n ├─ 2-Download single image \n ├─ 3-Settings \n ├─ 4-About \n └─ 5-Exit \n"
         )
     printline = True
     Cmd = input("~:")
@@ -51,11 +51,11 @@ while exit == False:
                     + str(settings[i])
                 )
             print(" └─ " + str(list(settings).__len__() + 1) + "- Back\n")
-            inp = input("Settings:")
+            inp = int(input("Settings:"))
             if int(inp) <= len(settings):
-                print(f"editing {list(settings.keys())[int(inp)-1]}")
+                print(f"editing {list(settings.keys())[inp-1]}")
                 newval = input("Enter new value: ")
-                editsettings(list(settings.keys())[int(inp) - 1], newval)
+                editsettings(list(settings.keys())[inp-1], newval)
             else:
                 exitsetting = True
     elif Cmd.lower() == "4":
@@ -69,4 +69,4 @@ maded with ♥
     elif Cmd.lower() == "5":
         exit = True
     else:
-        print(Back.WHITE + Fore.BLACK + "-invalid-" + Style.RESET_ALL + "\n")
+        print(Back.WHITE + Fore.BLACK + "-invalid-" + Style.RESET_ALL)
