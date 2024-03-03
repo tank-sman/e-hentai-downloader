@@ -6,6 +6,7 @@ def Download():
     link = input("gallery link: ")
 
     link = link[0 : link.find("?")]
+    link += "/" if not link.endswith("/") else link +""
     
     get_header()
 
@@ -39,8 +40,9 @@ but still downloading ;)"""
     bs = BeautifulSoup(markup=data, features="html.parser")
     tags = bs.find("div", {"class": "gm"})
     pagelist = bs.find_all("div", {"class": "gtb"})
+    
     pages = []
-    # print(data)
+
     mainGN = str(bs.find("h1", {"id": "gn"}).contents[0])
     GN = replaceName(mainGN)
     os.environ["DownloadGalleryName"] =GN
@@ -79,6 +81,7 @@ but still downloading ;)"""
             imagebox = bs.find_all("div", {"class": "gdtm"})
 
         for pic in imagebox:
+            # print(pic.find("a")["href"])
             pages_links.append(pic.find("a")["href"])
 
     print(
@@ -92,17 +95,23 @@ but still downloading ;)"""
         FinalPageLinks = []
         for i in pageRange:
             FinalPageLinks.append(pages_links[i])
-        create_download_info(link, data, FinalPageLinks)
+        create_download_info(link, data, pages_links)
     else:
         FinalPageLinks = pages_links.copy()
-        create_download_info(link, data, FinalPageLinks)
+        create_download_info(link, data, pages_links)
 
-    with Pool(int(json.loads(os.environ["userdata"])["core"])) as p:
-        p.map(MPdownload,FinalPageLinks)
+    try:
+        with Pool(4) as p:
+            print(os.environ["download_now"])
+            p.map(MPdownload,FinalPageLinks)
+            print(os.environ["download_now"])
+    except KeyboardInterrupt:
+        exit("closeing")
     print()
 
 def MPdownload(link):
     GN = os.environ["DownloadGalleryName"]
+    
     if get_downloadeds(link.split("/")[-1],GN):
         imglimit = checkIMGlimit()
         sleep(1)
@@ -113,17 +122,20 @@ def MPdownload(link):
                 + f"|{imglimit}| "
                 + ctime()[11:-5]
             )
-        print(strprint, end="")
+        print(strprint)
+        print(link.split("/")[-1])
         download_image(link)
+
     else:
         terminalx = get_terminal_size().columns
         print(
                 link.split("/")[-1]
                 + " already downloaded"
                 + " " * (terminalx - len(link.split("/")[-1]) - 21),
-                end="",
+                end="\r",
             )
         sleep(0.02)
+
 
 
 if __name__ == "__main__":

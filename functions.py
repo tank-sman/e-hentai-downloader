@@ -105,13 +105,14 @@ def download_image(url: str):
     # Create the folder
     if os.path.isdir(GN) == False:
         os.mkdir(GN)
+        
     downloaded = False
     while not downloaded:
         try:
             image_download_request(link, filename)
             downloaded = True
         except KeyboardInterrupt:
-            break
+            exit("CTRL + C")
         except:
             print("connection error"+" "*(os.get_terminal_size().columns-24)+ctime()[11:-5],end="\r")
             sleep(0.2)
@@ -226,6 +227,7 @@ Created by github.com/tank-sman/e-hentai-downloader.
 
 def checkIMGlimit():
     home = download("https://e-hentai.org/home.php")
+    # print("image limit check")
     bs = BeautifulSoup(home, "html.parser")
     # open(resource_path()+"/site-datas/tempdata.html","w",encoding="utf-8").write(home)
     try:limit = bs.find("strong").contents[0]
@@ -306,13 +308,13 @@ def parse_ranges(ranges: str, pages_links: list = []):
                     export.append(i)
 
             elif "/" in range_str:
-                range_numbers, page_multiple = range_str.split("/")
+                range_numbers, page_step = range_str.split("/")
                 start, end = map(int, range_numbers.split("-"))
-                for i in range(start - 1, end, int(page_multiple)):  # each page
+                for i in range(start - 1, end, int(page_step)):  # each page
                     export.append(i)
 
             else:
-                export.append(int(range_str))
+                export.append(int(range_str)-1)
 
         else:  # range_str.startswith("!"):
             toLast = re.match(r"^!\d+-+$", range_str)
@@ -334,9 +336,9 @@ def parse_ranges(ranges: str, pages_links: list = []):
                     export.remove(i)
 
             elif "/" in range_str:
-                range_numbers, page_multiple = range_str.split("/")
+                range_numbers, page_step = range_str.split("/")
                 start, end = map(int, range_numbers.split("-"))
-                for i in range(start - 1, end, int(page_multiple)):  # each page
+                for i in range(start - 1, end, int(page_step)):  # each page
                     export.remove(i)
 
             else:
