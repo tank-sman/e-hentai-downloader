@@ -10,7 +10,7 @@ def Download():
     
     get_header()
 
-    data = download(link)
+    data = downloadPage(link)
     retry = 0
     # open("site-datas/tempdata.html","w",encoding="utf-8").write(data)
     # exit()
@@ -22,11 +22,11 @@ def Download():
 but still downloading ;)"""
         )
         sleep(3)
-        data = download(link + "?nw=always")
+        data = downloadPage(link + "?nw=always")
 
     if data.startswith("Your IP"):
         while retry < 3:
-            data = download(link)
+            data = downloadPage(link)
             if data.startswith("Your IP "):
                 retry += 1
             else:
@@ -68,13 +68,13 @@ but still downloading ;)"""
         pagenumberCount += 1
         sleep(0.5)
         # print(i)
-        data = download(i)
+        data = downloadPage(i)
         if not data.startswith("Your IP"):
             bs = BeautifulSoup(markup=data, features="html.parser")
             imagebox = bs.find_all("div", {"class": "gdtm"})
         else:
             while data.startswith("Your IP"):
-                data = download(i)
+                data = downloadPage(i)
                 print(i)
                 print(data)
             bs = BeautifulSoup(markup=data, features="html.parser")
@@ -102,16 +102,13 @@ but still downloading ;)"""
 
     try:
         with Pool(4) as p:
-            print(os.environ["download_now"])
-            p.map(MPdownload,FinalPageLinks)
-            print(os.environ["download_now"])
+            p.map(MProdownload,FinalPageLinks)
     except KeyboardInterrupt:
         exit("closeing")
     print()
 
-def MPdownload(link):
+def MProdownload(link):
     GN = os.environ["DownloadGalleryName"]
-    
     if get_downloadeds(link.split("/")[-1],GN):
         imglimit = checkIMGlimit()
         sleep(1)
@@ -138,8 +135,8 @@ def MPdownload(link):
 
 
 
-if __name__ == "__main__":
-    Download()
+# if __name__ == "__main__":
+#     Download()
 
 # // todo: add https://e-hentai.org/home.php to check for image limit ---- DONE
 # todo: handling: Downloading original files of this gallery during peak hours requires GP, and you do not have enough

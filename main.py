@@ -1,8 +1,9 @@
 from os import get_terminal_size
+from pickle import TRUE
 from turtle import down
 from colorama import Back, Fore, Style
 from downloader import Download
-from functions import download_image
+from functions import download_image, get_header
 from settings import readSetting, resource_path, editsettings
 import json, os, subprocess, sys, time
 
@@ -17,7 +18,11 @@ import json, os, subprocess, sys, time
 
 printline = True
 exit = False
-while exit == False:
+if __name__ == "__main__":
+    is_main= True
+    
+else:is_main = False;print("not main")
+while exit == False and is_main:
     if printline:
         print(
             "\n" * (os.get_terminal_size().lines - 8)
@@ -32,6 +37,7 @@ while exit == False:
     if Cmd == "2":
         imageurl = input("E-Hentai Page URL: ")
         try:
+            get_header()
             download_image(imageurl)
         except FileExistsError:
             print("already exesits")

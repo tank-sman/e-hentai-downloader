@@ -44,7 +44,7 @@ def get_header():
 def request(url):
     return requests.get(url, headers=loads(environ["req_head"]),proxies=loads(environ["proxy"]))
 
-def download(link: str):
+def downloadPage(link: str):
     downloaded = False
     while not downloaded:
         try:
@@ -61,7 +61,7 @@ def download(link: str):
 
 if __name__ == "__main__":
     get_header()
-    download("https://google.com")
+    downloadPage("https://google.com")
     # print(loads(environ["userdata"]))
 
 def image_download_request(link, filename):
@@ -226,7 +226,7 @@ Created by github.com/tank-sman/e-hentai-downloader.
 
 
 def checkIMGlimit():
-    home = download("https://e-hentai.org/home.php")
+    home = downloadPage("https://e-hentai.org/home.php")
     # print("image limit check")
     bs = BeautifulSoup(home, "html.parser")
     # open(resource_path()+"/site-datas/tempdata.html","w",encoding="utf-8").write(home)
@@ -248,7 +248,7 @@ def checkIMGlimit():
             end="\r",
         )
         sleep(20)
-        home = download("https://e-hentai.org/home.php")
+        home = downloadPage("https://e-hentai.org/home.php")
         bs = BeautifulSoup(home, "html.parser")
         try:limit = bs.find("strong").contents[0]
         except:return "Error on login"
