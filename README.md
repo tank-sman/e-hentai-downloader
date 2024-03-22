@@ -48,9 +48,9 @@ Copy and paste the values as the program prompts
 
 - [x] Download single images
 
-- [ ] Download multiple files with parallel execution
+- [x] Download multiple files with parallel execution
 
-- [ ] Automatic login or automatic copying of cookies
+- [ ] Automatic login or automatic cookies copy
 
 - [ ] Handling downloads on peak hours
 

@@ -121,7 +121,7 @@ def download_image(url: str):
 
 def _file_name_for_download(url,bs, GN):
     imagedata = bs.find("div", {"id": "i2"}).find_all("div")[-1].contents[0]
-    filename = GN + "/" +url.split("/")[-1]+"-"+ imagedata.split(" :: ")[0]
+    filename = GN + "/" +imagedata.split(" :: ")[0]
     return filename
 
 

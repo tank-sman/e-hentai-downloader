@@ -14,6 +14,7 @@ datas = {
     "ipb_pass_hash": "",
     "ipb_session_id": "",
     "sk": "",
+    "rewriteInfo" : True,
     "proxy":"",
     "core":"1"
 }

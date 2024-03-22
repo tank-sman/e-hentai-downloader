@@ -101,7 +101,7 @@ but still downloading ;)"""
         create_download_info(link, data, pages_links)
 
     try:
-        with Pool(4) as p:
+        with Pool(loads(environ["userdata"])["core"]) as p:
             p.map(MProdownload,FinalPageLinks)
     except KeyboardInterrupt:
         exit("closeing")
@@ -120,7 +120,6 @@ def MProdownload(link):
                 + ctime()[11:-5]
             )
         print(strprint)
-        print(link.split("/")[-1])
         download_image(link)
 
     else:
