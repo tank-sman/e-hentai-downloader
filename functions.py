@@ -7,7 +7,7 @@ from colorama import Back, Fore, Style
 import requests, json, os, re
 
 invalid_chars = ["\\", "/", ":", "*", "?", '"', "<", ">", "|"]
-
+terminalSize = get_terminal_size().columns
 imglimit = 0
 
 
@@ -29,7 +29,7 @@ def get_header():
         datas["ipb_pass_hash"],
         datas["sk"],
     ]
-    environ["proxy"] = dumps({"https_proxy":datas["proxy"]})
+    environ["proxy"] = dumps({"https":datas["proxy"]})
     head = {
         "Cookie": f"ipb_session_id={userdata[0]}; ipb_member_id={userdata[1]}; ipb_pass_hash={userdata[2]}; sk={userdata[3]}",
         "Accept-Language": "en-US,en;q=0.5",
@@ -56,7 +56,7 @@ def downloadPage(link: str):
         except Exception as err:
             print("Connection Error: ", err)
             sleep(1)
-    # print(req.headers)
+    # print(req)
     return req.text
 
 if __name__ == "__main__":
@@ -121,13 +121,13 @@ def download_image(url: str):
 
 def _file_name_for_download(url,bs, GN):
     imagedata = bs.find("div", {"id": "i2"}).find_all("div")[-1].contents[0]
-    filename = GN + "/" +imagedata.split(" :: ")[0]
+    filename = GN + "/" + url.split("-")[-1].zfill(4)+"-"+imagedata.split(" :: ")[0]
     return filename
 
 
 def get_downloadeds(name: str,GN:str):
     for file in os.listdir(GN):
-        if str(file).startswith(f"{name}-"):
+        if str(file).startswith(name.split("-")[-1].zfill(4)):
             return False
         else:pass
     return True
@@ -162,7 +162,7 @@ def create_download_info(url, pageData, imageslink):
 
     Posted, Parent, Visible, Language, File_Size, pagesNumber, Favorited = bs.find_all(
         "td", {"class": "gdt2"}
-    )
+)
 
     tagnames = {}
     tgbox = bs.find("div", {"id": "gd4"})
@@ -247,7 +247,7 @@ def checkIMGlimit():
             + ctime()[11:-5],
             end="\r",
         )
-        sleep(20)
+        sleep(120)
         home = downloadPage("https://e-hentai.org/home.php")
         bs = BeautifulSoup(home, "html.parser")
         try:limit = bs.find("strong").contents[0]
@@ -347,6 +347,14 @@ def parse_ranges(ranges: str, pages_links: list = []):
     export.sort()
     return export
 
+def padLeft(__text,__pad: int=0, __fillChar=" ")->str:
+    if __pad==0:
+        __pad = float(terminalSize/2)
+        __pad = int(__pad.__round__(0))
+    export = str()
+    export += __fillChar*int(__pad-len(__text)/2)
+    export+=str(__text)
+    return export
 
 if __name__ == "__main__":
     pass

@@ -8,6 +8,8 @@ def Download():
     link = link[0 : link.find("?")]
     link += "/" if not link.endswith("/") else link +""
     
+    terminalSize = get_terminal_size().columns
+
     get_header()
 
     data = downloadPage(link)
@@ -46,8 +48,18 @@ but still downloading ;)"""
     mainGN = str(bs.find("h1", {"id": "gn"}).contents[0])
     GN = replaceName(mainGN)
     os.environ["DownloadGalleryName"] =GN
-    print("\n\n\n\n"+"="*32+"\n"+ mainGN)
-    print("LETS GO!"+"\n"+"="*32+"\n\n\n\n")
+
+    if len(mainGN) < 8:
+        mainGN = mainGN.center(8)
+    
+    if len(mainGN)>(terminalSize-6):
+        tempMain = mainGN
+        mainGN = "((Gallry name is too long. iam not gonig to show it.))"
+    else:tempMain = mainGN
+    
+    # this line print gallery name
+    print("\n\n\n\n");print(padLeft(f"┌──{'─'*(len(mainGN))}──┐"));print(padLeft(f"│  {mainGN}  │"));print(padLeft(f"│  {''.center(len(mainGN))}  │"));print(padLeft(f"│  {'LETS GO!'.center(len(mainGN))}  │"));print(padLeft(f"└──{'─'*(len(mainGN))}──┘"));print("\n\n\n\n");mainGN = tempMain
+
 
     for i in pagelist[0].find_all("a"):
         if i not in pages:
@@ -64,7 +76,7 @@ but still downloading ;)"""
     print("Downloading pages contents")
     pagenumberCount = 1
     for i in pages:
-        print("Page", pagenumberCount,end="\r")
+        print("Page", pagenumberCount,"/",len(pages),end="\r")
         pagenumberCount += 1
         sleep(0.5)
         # print(i)
@@ -101,10 +113,28 @@ but still downloading ;)"""
         create_download_info(link, data, pages_links)
 
     try:
-        with Pool(loads(environ["userdata"])["core"]) as p:
+        with Pool(int(loads(environ["userdata"])["core"])) as p:
             p.map(MProdownload,FinalPageLinks)
     except KeyboardInterrupt:
+        p.terminate()
         exit("closeing")
+
+    print("Recheck all downloadeds")
+
+    for i in FinalPageLinks:
+        if get_downloadeds(link.split("/")[-1],GN):
+            imglimit = checkIMGlimit()
+            sleep(1)
+            terminalx = get_terminal_size().columns
+            strprint = (
+                    link
+                    + " " * (terminalx - len(link) - len(imglimit) - 11)
+                    + f"-MISSED- |{imglimit}| "
+                    + ctime()[11:-5]
+                )
+            print(strprint)
+            download_image(link)
+        else:pass
     print()
 
 def MProdownload(link):

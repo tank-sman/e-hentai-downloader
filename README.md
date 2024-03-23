@@ -34,7 +34,7 @@ python main.py
 
 In the first run, you need to enter site cookies manually
 
-### In Chrome (or mayby other browser with chromium core like edge and ...)
+### In Chrome (or _mayby_ other browser with chromium core like edge and ...)
 
 ``` Inspect (F12) > Application > Cookies ```
 
@@ -61,3 +61,7 @@ Copy and paste the values as the program prompts
 ## Contributions
 
 All types of contributions are highly appreciated whatever it would be adding new features, fixing bugs, writing tests or docs, improving the current docs' grammars, or even fixing the typos!
+
+### Please Leave a review
+
+At this moment, I need your reviews and suggestions. Send them in [discussions](github.com/tank-sman/e-hentai-downloader/discussions). Thank you.💖
