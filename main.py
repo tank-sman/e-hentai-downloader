@@ -1,6 +1,4 @@
 from os import get_terminal_size
-from pickle import TRUE
-from turtle import down
 from colorama import Back, Fore, Style
 from downloader import Download
 from functions import download_image, get_header
