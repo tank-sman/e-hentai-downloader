@@ -34,7 +34,7 @@ while exit == False and is_main:
     if Cmd == "1":
         Download()
 
-    if Cmd == "2":
+    elif Cmd == "2":
         imageurl = input("E-Hentai Page URL: ")
         try:
             get_header()

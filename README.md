@@ -64,4 +64,4 @@ All types of contributions are highly appreciated whatever it would be adding ne
 
 ### Please Leave a review
 
-At this moment, I need your reviews and suggestions. Send them in [discussions](github.com/tank-sman/e-hentai-downloader/discussions). Thank you.💖
+At this moment, I need your reviews and suggestions. Send them in [discussions](https://github.com/tank-sman/e-hentai-downloader/discussions). Thank you.💖
