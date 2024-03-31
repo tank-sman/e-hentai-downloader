@@ -28,17 +28,20 @@ def get_header():
         datas["ipb_member_id"],
         datas["ipb_pass_hash"],
         datas["sk"],
+        datas["event"]
     ]
     environ["proxy"] = dumps({"https":datas["proxy"]})
     head = {
-        "Cookie": f"ipb_session_id={userdata[0]}; ipb_member_id={userdata[1]}; ipb_pass_hash={userdata[2]}; sk={userdata[3]}",
+        "Cookie": f"{'ipb_session_id='+userdata[0]+'; 'if userdata[0]!='' else 'event='+userdata[4]+'; '}ipb_member_id={userdata[1]}; ipb_pass_hash={userdata[2]}; sk={userdata[3]}",
         "Accept-Language": "en-US,en;q=0.5",
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:122.0) Gecko/20100101 Firefox/123.0",
         "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
         "Accept-Encoding": "gzip, deflate, br",
         "Connection":"keep-alive",
+        "Referer":"https://e-hentai.org",
         "Host":"e-hentai.org"
     }
+
     environ["req_head"] = dumps(head)
 
 def request(url):
@@ -56,13 +59,13 @@ def downloadPage(link: str):
         except Exception as err:
             print("Connection Error: ", err)
             sleep(1)
-    # print(req)
+
     return req.text
 
 if __name__ == "__main__":
     get_header()
     downloadPage("https://google.com")
-    # print(loads(environ["userdata"]))
+
 
 def image_download_request(link, filename):
     response = request(link)
@@ -205,7 +208,6 @@ Uploader: {Uploader}
 {tags}
 
 images links:
-
 {imagelist}
 
 download started on {ctime()}
