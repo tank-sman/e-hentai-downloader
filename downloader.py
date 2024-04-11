@@ -102,7 +102,7 @@ but still downloading ;)"""
             pages.pop()  # if loop didn't work so I remove it manualiy. so this line do -> removes next page button
             pages = complete_list(link, pages)
         #############
-        print(pages)
+        # print(pages)
 
         print("Downloading pages contents")
         pagenumberCount = 1
@@ -135,7 +135,7 @@ but still downloading ;)"""
 
     pageRange = input("Page range(leave empty to download all gallry):")
     if pageRange != "":
-        pageRange = parse_ranges(pageRange)
+        pageRange = parse_ranges(pageRange,pages_links)
         FinalPageLinks = []
         for i in pageRange:
             FinalPageLinks.append(pages_links[i])
@@ -151,9 +151,10 @@ but still downloading ;)"""
         p.terminate()
         exit("closeing")
 
-    print("Recheck all downloadeds")
+    print("Recheck...                           ")
 
     for i in FinalPageLinks:
+        link = i
         if get_downloadeds(link.split("/")[-1],GN):
             imglimit = checkIMGlimit()
             sleep(1)
@@ -167,33 +168,36 @@ but still downloading ;)"""
             print(strprint)
             download_image(link)
         else:pass
-    print()
+    print("ALL IMAGES DOWNLOADED.")
 
 
 def MProdownload(link):
     GN = os.environ["DownloadGalleryName"]
-    if get_downloadeds(link.split("/")[-1], GN):
-        imglimit = checkIMGlimit()
-        sleep(1)
-        terminalx = get_terminal_size().columns
-        strprint = (
-            link
-            + " " * (terminalx - len(link) - len(imglimit) - 11)
-            + f"|{imglimit}| "
-            + ctime()[11:-5]
-        )
-        print(strprint)
-        download_image(link)
+    try:
+        if get_downloadeds(link.split("/")[-1], GN):
+            imglimit = checkIMGlimit()
+            sleep(1)
+            terminalx = get_terminal_size().columns
+            strprint = (
+                link
+                + " " * (terminalx - len(link) - len(imglimit) - 11)
+                + f"|{imglimit}| "
+                + ctime()[11:-5]
+            )
+            print(strprint)
+            download_image(link)
 
-    else:
-        terminalx = get_terminal_size().columns
-        print(
-            link.split("/")[-1]
-            + " already downloaded"
-            + " " * (terminalx - len(link.split("/")[-1]) - 21),
-            end="\r",
-        )
-        sleep(0.02)
+        else:
+            terminalx = get_terminal_size().columns
+            print(
+                link.split("/")[-1]
+                + " already downloaded"
+                + " " * (terminalx - len(link.split("/")[-1]) - 21),
+                end="\r",
+            )
+            sleep(0.02)
+    except KeyboardInterrupt:
+        exit("closeing")
 
 
 if __name__ == "__main__":

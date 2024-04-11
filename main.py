@@ -49,12 +49,7 @@ while exit == False and is_main:
             settings = json.loads(os.environ["userdata"])
             for i in settings:
                 print(
-                    " ├─ "
-                    + str(list(settings).index(i) + 1)
-                    + "- "
-                    + i
-                    + " : "
-                    + str(settings[i])
+                    f" ├─ {list(settings).index(i) + 1} - {i} : {settings[i]}"
                 )
             print(" └─ " + str(list(settings).__len__() + 1) + "- Back\n")
             inp = int(input("Settings:"))
