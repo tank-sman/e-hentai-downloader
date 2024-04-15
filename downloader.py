@@ -17,6 +17,7 @@ def Download():
     retry = 0
     # open("site-datas/tempdata.html","w",encoding="utf-8").write(data)
     # exit()
+
     if data.find("Due to its content, it should not be viewed by anyone") != -1:
         print(
             f"""
@@ -26,10 +27,7 @@ but still downloading ;)"""
         )
         sleep(3)
         data = downloadPage(link + "?nw=always")
-    # print(data.find("Due to its content, it should not be viewed by anyone"))
-    ######
-    # open("site-datas/tempdata.html", "w", encoding="utf-8").write(data)
-    # exit()
+    
     if data.startswith("Your IP"):
         while retry < 3:
             data = downloadPage(link)
@@ -62,7 +60,7 @@ but still downloading ;)"""
         mainGN = mainGN.center(8)
 
     if len(mainGN) > (terminalSize - 6):
-        mainGN = "((Gallry name is too long in this terminal. i'm not gonig to show it.))"
+        mainGN = "((Gallry name is too long. i'm not gonig to show it.))"
     else:
         tempMain = mainGN
 
@@ -99,7 +97,7 @@ but still downloading ;)"""
         if len(pages) == 1:
             pass
         else:
-            pages.pop()  # if loop didn't work so I remove it manualiy. so this line do -> removes next page button
+            pages.pop()  # if didn't work so I remove it manualiy. so this line do -> removes next page button
             pages = complete_list(link, pages)
         #############
         # print(pages)
@@ -110,21 +108,18 @@ but still downloading ;)"""
             print("Page", pagenumberCount, "/", len(pages), end="\r")
             pagenumberCount += 1
             sleep(0.5)
-            # print(i)
+
             data = downloadPage(i)
-            if not data.startswith("Your IP"):
-                bs = BeautifulSoup(markup=data, features="html.parser")
-                imagebox = bs.find_all("div", {"class": "gdtm"})
-            else:
+            if data.startswith("Your IP"):
                 while data.startswith("Your IP"):
                     data = downloadPage(i)
                     print(i)
                     print(data)
-                bs = BeautifulSoup(markup=data, features="html.parser")
-                imagebox = bs.find_all("div", {"class": "gdtm"})
 
+            htmlpage = BeautifulSoup(markup=data, features="html.parser")
+            imagebox = htmlpage.find_all("div", {"class": "gdtm"})
+              
             for pic in imagebox:
-                # print(pic.find("a")["href"])
                 pages_links.append(pic.find("a")["href"])
 
         print(
@@ -145,8 +140,12 @@ but still downloading ;)"""
         create_download_info(link, data, pages_links)
 
     try:
-        with Pool(int(loads(environ["userdata"])["core"])) as p:
-            p.map(MProdownload, FinalPageLinks)
+        core = int(loads(environ["userdata"])["core"])
+        FinalPageLinks = split_list(FinalPageLinks,core)
+
+        with Pool(core) as p:
+            p.map(MPdownload, FinalPageLinks)
+
     except KeyboardInterrupt:
         p.terminate()
         exit("closeing")
@@ -171,38 +170,44 @@ but still downloading ;)"""
     print("ALL IMAGES DOWNLOADED.")
 
 
-def MProdownload(link):
-    GN = os.environ["DownloadGalleryName"]
-    try:
-        if get_downloadeds(link.split("/")[-1], GN):
-            imglimit = checkIMGlimit()
-            sleep(1)
-            terminalx = get_terminal_size().columns
-            strprint = (
-                link
-                + " " * (terminalx - len(link) - len(imglimit) - 11)
-                + f"|{imglimit}| "
-                + ctime()[11:-5]
-            )
-            print(strprint)
-            download_image(link)
+def MPdownload(links:dict):
+    workerNumber = f"Worker {links.keys()[0]} |"
+    linklist = links.values()[0]
 
-        else:
-            terminalx = get_terminal_size().columns
-            print(
-                link.split("/")[-1]
-                + " already downloaded"
-                + " " * (terminalx - len(link.split("/")[-1]) - 21),
-                end="\r",
-            )
-            sleep(0.02)
-    except KeyboardInterrupt:
-        exit("closeing")
+    for link in linklist: 
+        GN = os.environ["DownloadGalleryName"]
+        try:
+            if get_downloadeds(link.split("/")[-1], GN):
+                imglimit = checkIMGlimit()
+                sleep(1)
+                terminalx = get_terminal_size().columns
+                strprint = (
+                    workerNumber
+                    +link
+                    + " " * (terminalx - len(link) - len(imglimit) - 11 - len(workerNumber))
+                    + f"|{imglimit}| "
+                    + ctime()[11:-5]
+                )
+                print(strprint)
+                download_image(link)
+
+            else:
+                terminalx = get_terminal_size().columns
+                print(
+                    workerNumber
+                    +link.split("/")[-1]
+                    + " already downloaded"
+                    + " " * (terminalx - len(link.split("/")[-1]) - 21),
+                    end="\r",
+                )
+                sleep(0.02)
+        except KeyboardInterrupt:
+            exit("closeing")
 
 
 if __name__ == "__main__":
     Download()
 
 # // todo: add https://e-hentai.org/home.php to check for image limit ---- DONE
-# todo: handling: Downloading original files of this gallery during peak hours requires GP, and you do not have enough
+# todo: handle: Downloading original files of this gallery during peak hours requires GP, and you do not have enough
 # // todo: fix: Error on downloading one page gallerys

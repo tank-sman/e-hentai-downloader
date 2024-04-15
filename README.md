@@ -56,6 +56,10 @@ Copy and paste the values as the program prompts
 
 - [x] Fix single page galleries downloading issue
 
+- [ ] Torrent Download
+
+- [x] Fix for MPdownlaod
+
 ***That's it for now----***
 
 ## Contributions
