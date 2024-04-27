@@ -383,17 +383,19 @@ def split_list(my_list, x):
     chunk_size = math.ceil(len(my_list) / x)
 
     parts = {}
+    parts = []
     for i in range(x):
         start = i * chunk_size
         end = start + chunk_size
-        parts[str(i + 1)] = my_list[start:end]
-
-    export = []
-    for i in parts:
-        part = {}
-        part[i] = parts[i]
-        export.append(part)
-    return export
+        # parts[str(i + 1)] = my_list[start:end]
+        parts.append(my_list[start:end])
+    return parts
+    # export = []
+    # for i in parts:
+    #     part = {}
+    #     part[i] = parts[i]
+    #     export.append({i:parts[i]})
+    # return export
 
 
 if __name__ == "__main__":

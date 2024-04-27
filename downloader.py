@@ -18,16 +18,6 @@ def Download():
     # open("site-datas/tempdata.html","w",encoding="utf-8").write(data)
     # exit()
 
-    if data.find("Due to its content, it should not be viewed by anyone") != -1:
-        print(
-            f"""
-{Back.WHITE}{Fore.BLACK}Offensive For Everyone!{Back.BLACK}{Fore.WHITE}
-    Due to its content, it should not be viewed by anyone
-but still downloading ;)"""
-        )
-        sleep(3)
-        data = downloadPage(link + "?nw=always")
-    
     if data.startswith("Your IP"):
         while retry < 3:
             data = downloadPage(link)
@@ -43,7 +33,7 @@ but still downloading ;)"""
     if data == "Key missing, or incorrect key provided.":
         print("Please update cookies.   You can do it in Settings")
         return
-
+    
     bs = BeautifulSoup(markup=data, features="html.parser")
     tags = bs.find("div", {"class": "gm"})
     pagelist = bs.find_all("div", {"class": "gtb"})
@@ -107,7 +97,7 @@ but still downloading ;)"""
         for i in pages:
             print("Page", pagenumberCount, "/", len(pages), end="\r")
             pagenumberCount += 1
-            sleep(0.5)
+            # sleep(0.5)
 
             data = downloadPage(i)
             if data.startswith("Your IP"):
@@ -137,7 +127,7 @@ but still downloading ;)"""
         create_download_info(link, data, pages_links)
     else:
         FinalPageLinks = pages_links.copy()
-        create_download_info(link, data, pages_links)
+        # create_download_info(link, data, pages_links)
 
     try:
         core = int(loads(environ["userdata"])["core"])
@@ -171,9 +161,10 @@ but still downloading ;)"""
 
 
 def MPdownload(links:dict):
-    workerNumber = f"Worker {links.keys()[0]} |"
-    linklist = links.values()[0]
-
+    # workerNumber = f"Worker {links.keys()[0]} |"
+    workerNumber = ""
+    # linklist = links.values()[0]
+    linklist = links
     for link in linklist: 
         GN = os.environ["DownloadGalleryName"]
         try:
