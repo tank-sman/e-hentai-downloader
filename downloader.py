@@ -127,17 +127,22 @@ def Download():
         create_download_info(link, data, pages_links)
     else:
         FinalPageLinks = pages_links.copy()
-        # create_download_info(link, data, pages_links)
+        create_download_info(link, data, pages_links)
 
     try:
         core = int(loads(environ["userdata"])["core"])
-        FinalPageLinks = split_list(FinalPageLinks,core)
+        # FinalPageLinks = split_list(FinalPageLinks,core)
 
         with Pool(core) as p:
             p.map(MPdownload, FinalPageLinks)
 
     except KeyboardInterrupt:
         p.terminate()
+        exit("closeing")
+
+    except Exception as e:
+        p.terminate()
+        print(e)
         exit("closeing")
 
     print("Recheck...                           ")
@@ -160,10 +165,47 @@ def Download():
     print("ALL IMAGES DOWNLOADED.")
 
 
-def MPdownload(links:dict):
+def MPdownload(links:list):
     # workerNumber = f"Worker {links.keys()[0]} |"
     workerNumber = ""
     # linklist = links.values()[0]
+    linklist = links
+    link = linklist
+    # for link in linklist: 
+    GN = os.environ["DownloadGalleryName"]
+    try:
+        if get_downloadeds(link.split("/")[-1], GN):
+            imglimit = checkIMGlimit()
+            sleep(1)
+            terminalx = get_terminal_size().columns
+            strprint = (
+                workerNumber
+                +link
+                + " " * (terminalx - len(link) - len(imglimit) - 11 - len(workerNumber))
+                + f"|{imglimit}| "
+                + ctime()[11:-5]
+            )
+            print(strprint)
+            download_image(link)
+
+        else:
+            terminalx = get_terminal_size().columns
+            print(
+                workerNumber
+                +link.split("/")[-1]
+                + " already downloaded"
+                + " " * (terminalx - len(link.split("/")[-1]) - 21),
+                end="\r",
+            )
+            # sleep(0.02)
+    except KeyboardInterrupt:
+        exit("closeing")
+    except Exception as e:
+        print(e)
+        exit()
+
+
+def Normaldownloader(links:list):
     linklist = links
     for link in linklist: 
         GN = os.environ["DownloadGalleryName"]
@@ -173,9 +215,8 @@ def MPdownload(links:dict):
                 sleep(1)
                 terminalx = get_terminal_size().columns
                 strprint = (
-                    workerNumber
-                    +link
-                    + " " * (terminalx - len(link) - len(imglimit) - 11 - len(workerNumber))
+                    link
+                    + " " * (terminalx - len(link) - len(imglimit) - 11)
                     + f"|{imglimit}| "
                     + ctime()[11:-5]
                 )
@@ -185,8 +226,7 @@ def MPdownload(links:dict):
             else:
                 terminalx = get_terminal_size().columns
                 print(
-                    workerNumber
-                    +link.split("/")[-1]
+                    link.split("/")[-1]
                     + " already downloaded"
                     + " " * (terminalx - len(link.split("/")[-1]) - 21),
                     end="\r",
