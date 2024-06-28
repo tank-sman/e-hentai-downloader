@@ -49,7 +49,7 @@ def Download():
     if len(mainGN) < 8:
         mainGN = mainGN.center(8)
 
-    if len(mainGN) > (terminalSize - 6):
+    if len(mainGN) > (terminalSize - 6) and terminalSize > 0 :
         mainGN = "((Gallry name is too long. i'm not gonig to show it.))"
     else:
         tempMain = mainGN
@@ -63,11 +63,10 @@ def Download():
     print(padLeft(f"└──{'─'*(len(mainGN))}──┘"))
     print("\n\n\n\n")
     mainGN = tempMain
-    mainGN = tempMain
 
     pages_links = []
     try:
-        infofile = open(GN + "/info.txt", "r")
+        infofile = open(GN + "/info.txt", "r",encoding="utf-8")
         print("Reading Data from INFO file")
         # print("continuing from ")
         for line in infofile.readlines():
@@ -80,7 +79,10 @@ def Download():
             elif line.startswith("https://e-hentai.org"):
                 pages_links.append(line.strip("\n"))
             else:pass
-    except:
+    except Exception as error :
+        # print(error)
+        try:os.mkdir(GN)
+        except:pass
         for i in pagelist[0].find_all("a"):
             if i not in pages:
                 pages.append(i.attrs["href"])
@@ -133,11 +135,23 @@ def Download():
         core = int(loads(environ["userdata"])["core"])
         # FinalPageLinks = split_list(FinalPageLinks,core)
 
-        with Pool(core) as p:
-            p.map(MPdownload, FinalPageLinks)
+        ### Multiprocess if core > 1  
+        if core > 1:
+            with Pool(core) as p:
+                p.map(MPdownload, FinalPageLinks)
+        else:
+            for i in FinalPageLinks:
+                link = i
+                if get_downloadeds(link.split("/")[-1],GN):
+                    imglimit = checkIMGlimit()
+                    sleep(1)
+                    logger(link, imglimit)
+                    download_image(link)
+                else:pass
 
     except KeyboardInterrupt:
-        p.terminate()
+        if p:
+            p.terminate()
         exit("closeing")
 
     except Exception as e:
@@ -152,14 +166,7 @@ def Download():
         if get_downloadeds(link.split("/")[-1],GN):
             imglimit = checkIMGlimit()
             sleep(1)
-            terminalx = get_terminal_size().columns
-            strprint = (
-                    link
-                    + " " * (terminalx - len(link) - len(imglimit) - 11)
-                    + f"-MISSED- |{imglimit}| "
-                    + ctime()[11:-5]
-                )
-            print(strprint)
+            logger(link,imglimit)
             download_image(link)
         else:pass
     print("ALL IMAGES DOWNLOADED.")
@@ -177,15 +184,7 @@ def MPdownload(links:list):
         if get_downloadeds(link.split("/")[-1], GN):
             imglimit = checkIMGlimit()
             sleep(1)
-            terminalx = get_terminal_size().columns
-            strprint = (
-                workerNumber
-                +link
-                + " " * (terminalx - len(link) - len(imglimit) - 11 - len(workerNumber))
-                + f"|{imglimit}| "
-                + ctime()[11:-5]
-            )
-            print(strprint)
+            logger(link,imglimit)
             download_image(link)
 
         else:
@@ -194,8 +193,7 @@ def MPdownload(links:list):
                 workerNumber
                 +link.split("/")[-1]
                 + " already downloaded"
-                + " " * (terminalx - len(link.split("/")[-1]) - 21),
-                end="\r",
+                + " " * (terminalx - len(link.split("/")[-1]) - 21)
             )
             # sleep(0.02)
     except KeyboardInterrupt:
@@ -213,14 +211,7 @@ def Normaldownloader(links:list):
             if get_downloadeds(link.split("/")[-1], GN):
                 imglimit = checkIMGlimit()
                 sleep(1)
-                terminalx = get_terminal_size().columns
-                strprint = (
-                    link
-                    + " " * (terminalx - len(link) - len(imglimit) - 11)
-                    + f"|{imglimit}| "
-                    + ctime()[11:-5]
-                )
-                print(strprint)
+                logger(link,imglimit)
                 download_image(link)
 
             else:
@@ -237,6 +228,10 @@ def Normaldownloader(links:list):
 
 
 if __name__ == "__main__":
+    # if len(sys.argv)>2:
+    #   os.environ["justPV"]="true"
+    # else:
+    #   os.environ["justPV"]="false"
     Download()
 
 # // todo: add https://e-hentai.org/home.php to check for image limit ---- DONE
