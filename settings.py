@@ -7,7 +7,7 @@ def resource_path():
     return os.path.join(base_path)
 
 
-settingsfilename = resource_path() + "\data.json"
+settingsfilename = resource_path() + "/data.json"
 datas = {
     "savePath": "Downloads/",
     "ipb_member_id": "",
@@ -25,8 +25,9 @@ def readSetting(datas=datas) -> dict:
     try:
         export = json.load(open(settingsfilename))
         datas = export
-    except FileNotFoundError:
-        if datas["ipb_member_id"] == "":
+    except Exception as e:
+        print(e)
+        if datas["ipb_member_id"] == "" and datas["ipb_pass_hash"] == "":
             memberid = input("enter from cookies (ipb_member_id):")
             passhash = input("enter from cookies (ipb_pass_hash):")
             sessionID = input("enter from cookies (ipb_session_id)(Leave empty if not exist):")
