@@ -34,7 +34,7 @@ def get_header():
     ]
     environ["proxy"] = dumps({"https": datas["proxy"]})
     head = {
-        "Cookie": f"{'ipb_session_id='+userdata[0]+'; 'if userdata[0]!='' else 'event='+userdata[4]+'; '}ipb_member_id={userdata[1]}; ipb_pass_hash={userdata[2]}; sk={userdata[3]};  nw=1",
+        "Cookie": f"ipb_member_id={userdata[1]}; ipb_pass_hash={userdata[2]}; sk={userdata[3]};  nw=1",
         "Accept-Language": "en-US,en;q=0.5",
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:122.0) Gecko/20100101 Firefox/123.0",
         "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
@@ -104,8 +104,9 @@ def download_image(url: str):
     except:
         exit(data.text)
 
-    if len(link) == 1:
-        print("\nNo High quality image Found\n donwloading lower quality.")
+    if len(link) == 1 or environ["justPV"]=="true":
+        if not environ["justPV"]=="true":
+            print("\nNo High quality image Found\n donwloading lower quality.")
         link = bs.find("img", {"id": "img"}).attrs["src"]
     # sleep(1)
 
@@ -229,7 +230,8 @@ Created by github.com/tank-sman/e-hentai-downloader.
     except:
         print("info file exist.")
         rewrite = json.loads(environ["userdata"])["rewriteInfo"]
-        if rewrite:
+        # print(rewrite)
+        if rewrite==True:
             print("Rewriting...")
             file = open(GN + "/info.txt", "w", encoding="utf-8")
             file.write(fulltext)
@@ -367,6 +369,7 @@ def parse_ranges(ranges: str, pages_links: list = []):
 
 
 def padLeft(__text, __pad: int = 0, __fillChar=" ") -> str:
+    ##** .center()
     if __pad == 0:
         __pad = float(terminalSize / 2)
         __pad = int(__pad.__round__(0))
@@ -396,6 +399,20 @@ def split_list(my_list, x):
     #     part[i] = parts[i]
     #     export.append({i:parts[i]})
     # return export
+
+
+def logger(link, imglimit):
+    terminalx = get_terminal_size().columns
+    if terminalx == 0:
+        terminalx = 10 
+    strprint = (
+                            link
+                            + " " * (terminalx - len(link) - len(imglimit) - 11)
+                            + f"|{imglimit}| "
+                            + ctime()[11:-5]
+                        )
+    print(strprint)
+
 
 
 if __name__ == "__main__":
