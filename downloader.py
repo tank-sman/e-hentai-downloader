@@ -231,8 +231,8 @@ if __name__ == "__main__":
     # if len(sys.argv)>2:
     #   os.environ["justPV"]="true"
     # else:
-    #   os.environ["justPV"]="false"
     Download()
+os.environ["justPV"]="false"
 
 # // todo: add https://e-hentai.org/home.php to check for image limit ---- DONE
 # todo: handle: Downloading original files of this gallery during peak hours requires GP, and you do not have enough
