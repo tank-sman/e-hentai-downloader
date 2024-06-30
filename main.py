@@ -48,10 +48,13 @@ while exit == False and is_main:
             print("\n" * (os.get_terminal_size().lines - 9) + "\nSettings ")
             settings = json.loads(os.environ["userdata"])
             for i in settings:
+                if i == "Perview":
+                    hint =" (Just download the preview, which is smaller in size and quality) "
+                else:hint = ""
                 print(
-                    f" ├─ {list(settings).index(i) + 1} - {i} : {settings[i]}"
+                    f" ├─ {list(settings).index(i) + 1} - {i} {hint}: {settings[i]}"
                 )
-            print(" └─ " + str(list(settings).__len__() + 1) + "- Back\n")
+            print(" └─ " + str(list(settings).__len__() + 1) + " - Back\n")
             inp = int(input("Settings:"))
             if int(inp) <= len(settings):
                 print(f"editing {list(settings.keys())[inp-1]}")

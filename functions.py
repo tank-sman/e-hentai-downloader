@@ -104,8 +104,8 @@ def download_image(url: str):
     except:
         exit(data.text)
 
-    if len(link) == 1 or environ["justPV"]=="true":
-        if not environ["justPV"]=="true":
+    if len(link) == 1 or datas["Perview"]==True:
+        if datas["Perview"]==False:
             print("\nNo High quality image Found\n donwloading lower quality.")
         link = bs.find("img", {"id": "img"}).attrs["src"]
     # sleep(1)

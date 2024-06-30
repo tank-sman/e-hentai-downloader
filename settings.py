@@ -16,6 +16,7 @@ datas = {
     "event":"",
     "sk": "",
     "rewriteInfo" : True,
+    "Perview" : True,
     "proxy":"",
     "core":"1"
 }
